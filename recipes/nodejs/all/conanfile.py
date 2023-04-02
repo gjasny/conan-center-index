@@ -58,13 +58,14 @@ class NodejsConan(ConanFile):
     def package(self):
         copy(self, pattern="LICENSE", dst=os.path.join(self.package_folder, "licenses"), src=self._source_subfolder)
         copy(self, pattern="*", dst=os.path.join(self.package_folder, "bin"), src=os.path.join(self._source_subfolder, "bin"))
+        copy(self, pattern="*", dst=os.path.join(self.package_folder, "include"), src=os.path.join(self._source_subfolder, "include"))
         copy(self, pattern="*", dst=os.path.join(self.package_folder, "lib"), src=os.path.join(self._source_subfolder, "lib"))
         copy(self, pattern="node.exe", dst=os.path.join(self.package_folder, "bin"), src=self._source_subfolder)
         copy(self, pattern="npm", dst=os.path.join(self.package_folder, "bin"), src=self._source_subfolder)
         copy(self, pattern="npx", dst=os.path.join(self.package_folder, "bin"), src=self._source_subfolder)
 
     def package_info(self):
-        self.cpp_info.includedirs = []
+        self.cpp_info.includedirs = [os.path.join("include", "node")]
         bin_dir = os.path.join(self.package_folder, "bin")
         self.output.info('Appending PATH environment variable: {}'.format(bin_dir))
         self.env_info.PATH.append(bin_dir)

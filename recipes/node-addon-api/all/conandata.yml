@@ -1,0 +1,4 @@
+sources:
+  "6.1.0":
+    url: "https://github.com/nodejs/node-addon-api/archive/refs/tags/v6.1.0.tar.gz"
+    sha256: "417b8629b92406b6c451b1cfc6bfd46611c315c2179930f779e78a8d3c95026c"
