@@ -1,4 +1,7 @@
 sources:
+  "cci.20230113":
+    url: "https://github.com/emil-e/rapidcheck/archive/1505cbbce733bde3b78042cf2e9309c0b7f227a2.zip"
+    sha256: "22b2853eb110f1b291afd92f4aa9e9bca39150aab6b37f07d55e4ad69e1057fd"
   "cci.20220514":
     url: "https://github.com/emil-e/rapidcheck/archive/8fafda42e732164db58003e542196e94a28481f9.zip"
     sha256: "63853f74026678b5cfed5f18f5d8cbd4eccb2f48bb89a8f8cb1cd1cc69f22db8"
@@ -12,6 +15,10 @@ sources:
     url: "https://github.com/emil-e/rapidcheck/archive/258d907da00a0855f92c963d8f76eef115531716.zip"
     sha256: "87bfbdceaa09e7aaaf70b2efd0078e93323dd8abdad48c57e9f23bfd84174a75"
 patches:
+  "cci.20230113":
+    - patch_file: "patches/0001-gtest-catch-integration-20230113.patch"
+      patch_description: "Remove dependency on test frameworks for for rapidcheck tests"
+      patch_type: "conan"
   "cci.20220514":
     - patch_file: "patches/0001-gtest-catch-integration-20220514.patch"
       patch_description: "Remove dependency on test frameworks for for rapidcheck tests"
