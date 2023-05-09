@@ -1,0 +1,145 @@
+diff --git a/src/MQTTAsync.c b/src/MQTTAsync.c
+index cc06582..e403e46 100644
+--- a/src/MQTTAsync.c
++++ b/src/MQTTAsync.c
+@@ -70,8 +70,12 @@
+ const char *client_timestamp_eye = "MQTTAsyncV3_Timestamp " BUILD_TIMESTAMP;
+ const char *client_version_eye = "MQTTAsyncV3_Version " CLIENT_VERSION;
+ 
++// global objects init declaration
++void MQTTAsync_init();
++
+ void MQTTAsync_global_init(MQTTAsync_init_options* inits)
+ {
++	MQTTAsync_init();
+ #if defined(OPENSSL)
+ 	SSLSocket_handleOpensslInit(inits->do_openssl_init);
+ #endif
+@@ -117,30 +121,45 @@ BOOL APIENTRY DllMain(HANDLE hModule,
+ 	{
+ 		case DLL_PROCESS_ATTACH:
+ 			Log(TRACE_MAX, -1, "DLL process attach");
+-			if (mqttasync_mutex == NULL)
+-			{
+-				mqttasync_mutex = CreateMutex(NULL, 0, NULL);
+-				mqttcommand_mutex = CreateMutex(NULL, 0, NULL);
+-				send_sem = CreateEvent(
+-		        NULL,               /* default security attributes */
+-		        FALSE,              /* manual-reset event? */
+-		        FALSE,              /* initial state is nonsignaled */
+-		        NULL                /* object name */
+-		        );
+-				stack_mutex = CreateMutex(NULL, 0, NULL);
+-				heap_mutex = CreateMutex(NULL, 0, NULL);
+-				log_mutex = CreateMutex(NULL, 0, NULL);
+-				socket_mutex = CreateMutex(NULL, 0, NULL);
+-			}
++			MQTTAsync_init();
++			break;
+ 		case DLL_THREAD_ATTACH:
+ 			Log(TRACE_MAX, -1, "DLL thread attach");
++			break;
+ 		case DLL_THREAD_DETACH:
+ 			Log(TRACE_MAX, -1, "DLL thread detach");
++			break;
+ 		case DLL_PROCESS_DETACH:
+ 			Log(TRACE_MAX, -1, "DLL process detach");
++		break;
+ 	}
+ 	return TRUE;
+ }
++
++void MQTTAsync_init(void)
++{
++	if (mqttasync_mutex == NULL)
++	{
++		mqttasync_mutex = CreateMutex(NULL, 0, NULL);
++		mqttcommand_mutex = CreateMutex(NULL, 0, NULL);
++		send_sem = CreateEvent(
++				NULL,               /* default security attributes */
++				FALSE,              /* manual-reset event? */
++				FALSE,              /* initial state is nonsignaled */
++				NULL                /* object name */
++				);
++		stack_mutex = CreateMutex(NULL, 0, NULL);
++		heap_mutex = CreateMutex(NULL, 0, NULL);
++		log_mutex = CreateMutex(NULL, 0, NULL);
++		socket_mutex = CreateMutex(NULL, 0, NULL);
++	}
++	else
++	{
++		Log(TRACE_MAX, -1, "Library already initialized");
++	}
++}
++
++
+ #else
+ static pthread_mutex_t mqttasync_mutex_store = PTHREAD_MUTEX_INITIALIZER;
+ static mutex_type mqttasync_mutex = &mqttasync_mutex_store;
+diff --git a/src/MQTTClient.c b/src/MQTTClient.c
+index eb832ed..018d99c 100644
+--- a/src/MQTTClient.c
++++ b/src/MQTTClient.c
+@@ -78,8 +78,11 @@
+ const char *client_timestamp_eye = "MQTTClientV3_Timestamp " BUILD_TIMESTAMP;
+ const char *client_version_eye = "MQTTClientV3_Version " CLIENT_VERSION;
+ 
++void MQTTClient_init(void);
++
+ void MQTTClient_global_init(MQTTClient_init_options* inits)
+ {
++	MQTTClient_init();
+ #if defined(OPENSSL)
+ 	SSLSocket_handleOpensslInit(inits->do_openssl_init);
+ #endif
+@@ -112,26 +115,36 @@ BOOL APIENTRY DllMain(HANDLE hModule,
+ 	{
+ 		case DLL_PROCESS_ATTACH:
+ 			Log(TRACE_MAX, -1, "DLL process attach");
+-			if (mqttclient_mutex == NULL)
+-			{
+-				mqttclient_mutex = CreateMutex(NULL, 0, NULL);
+-				subscribe_mutex = CreateMutex(NULL, 0, NULL);
+-				unsubscribe_mutex = CreateMutex(NULL, 0, NULL);
+-				connect_mutex = CreateMutex(NULL, 0, NULL);
+-				stack_mutex = CreateMutex(NULL, 0, NULL);
+-				heap_mutex = CreateMutex(NULL, 0, NULL);
+-				log_mutex = CreateMutex(NULL, 0, NULL);
+-				socket_mutex = CreateMutex(NULL, 0, NULL);
+-			}
++			MQTTClient_init();
++			break;
+ 		case DLL_THREAD_ATTACH:
+ 			Log(TRACE_MAX, -1, "DLL thread attach");
++			break;
+ 		case DLL_THREAD_DETACH:
+ 			Log(TRACE_MAX, -1, "DLL thread detach");
++			break;
+ 		case DLL_PROCESS_DETACH:
+ 			Log(TRACE_MAX, -1, "DLL process detach");
++			break;
+ 	}
+ 	return TRUE;
+ }
++
++void MQTTClient_init(void)
++{
++	if (mqttclient_mutex == NULL)
++	{
++		mqttclient_mutex = CreateMutex(NULL, 0, NULL);
++		subscribe_mutex = CreateMutex(NULL, 0, NULL);
++		unsubscribe_mutex = CreateMutex(NULL, 0, NULL);
++		connect_mutex = CreateMutex(NULL, 0, NULL);
++		stack_mutex = CreateMutex(NULL, 0, NULL);
++		heap_mutex = CreateMutex(NULL, 0, NULL);
++		log_mutex = CreateMutex(NULL, 0, NULL);
++		socket_mutex = CreateMutex(NULL, 0, NULL);
++	}
++}
++
+ #else
+ static pthread_mutex_t mqttclient_mutex_store = PTHREAD_MUTEX_INITIALIZER;
+ static mutex_type mqttclient_mutex = &mqttclient_mutex_store;
+-- 
+2.40.1
+

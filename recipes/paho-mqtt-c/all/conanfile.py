@@ -1,6 +1,7 @@
 from conan import ConanFile
 from conan.tools.cmake import CMake, CMakeDeps, CMakeToolchain, cmake_layout
 from conan.tools.files import apply_conandata_patches, export_conandata_patches, get, copy, rm, replace_in_file
+from conan.tools.scm import Version
 import os
 
 required_conan_version = ">=1.53.0"
@@ -158,6 +159,6 @@ class PahoMqttcConan(ConanFile):
             target += "s"
         if not self.options.shared:
             # https://github.com/eclipse/paho.mqtt.c/blob/317fb008e1541838d1c29076d2bc5c3e4b6c4f53/src/CMakeLists.txt#L154
-            if self.settings.os == "Windows":
+            if self.settings.os == "Windows" or Version(self.version) < "1.3":
                 target += "-static"
         return target
